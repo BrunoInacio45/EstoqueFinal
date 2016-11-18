@@ -1,0 +1,146 @@
+produto(001,'Achocolatado','Nescau',50,'Alimenticio',6.69).
+produto(002,'Achocolatado','Toddy',30,'Alimenticio',3.00).
+produto(003,'Arroz','Vasconcelos',20,'Alimenticio',1.00).
+produto(004,'Feijão','Vasconcelos',30,'Alimenticio',6.00).
+produto(005,'Açucar','Camil',20,'Alimenticio',5.00).
+produto(006,'Refrigerante','Coca Cola',50,'Alimenticio',9.00).
+produto(007,'Refrigerante','Kuat',30,'Alimenticio',10.00).
+produto(008,'Suco','Fresh',200,'Alimenticio',2.00).
+produto(009,'Suco','Del Valle',40,'Alimenticio',6.00).
+produto(010,'Bolacha','Nikito',30,'Alimenticio',8.00).
+produto(011,'Bolacha','Negresco',20,'Alimenticio',12.00).
+produto(012,'Achocolatado','Toddy',30,'Alimenticio',29.00).
+
+venda(001,'Achocolatado','Nescau',40,'Alimenticio',7.69).
+venda(002,'Achocolatado','Toddy',25,'Alimenticio',5.00).
+venda(003,'Arroz','Vasconcelos',10,'Alimenticio',6.00).
+venda(004,'Feijão','Vasconcelos',27,'Alimenticio',7.00).
+venda(005,'Açucar','Camil',10,'Alimenticio',8.00).
+venda(006,'Refrigerante','Coca Cola',49,'Alimenticio',9.00).
+venda(007,'Refrigerante','Kuat',20,'Alimenticio',10.00).
+venda(008,'Suco','Fresh',50,'Alimenticio',2.00).
+venda(009,'Suco','Del Valle',33,'Alimenticio',6.00).
+venda(010,'Bolacha','Nikito',30,'Alimenticio',8.00).
+venda(011,'Bolacha','Negresco',20,'Alimenticio',12.00).
+venda(012,'Achocolatado','Toddy',24,'Alimenticio',29.00).
+
+main :-
+	nl,
+    write('CONTROLE DE ESTOQUE'),nl,nl,
+    write('1 - Consultar quantidade de um produto'),nl,
+    write('2 - Lucro em cima de um produto'),nl,
+    write('3 - Quantidade de produtos no estoque'),nl,
+    write('4 - Total gasto em compras'),nl,
+    write('8 - Sair'),nl,
+    write('Digite a opção: '),
+    read(CAT),                                        /*Lê CAT = Categoria*/
+    opcao(CAT).
+
+opcao(CAT) :-
+	CAT == 1,
+	nl,
+	write("Digite o nome do produto: "),
+	read(COD),
+	busca(COD).
+
+opcao(CAT) :-
+	CAT == 2,
+	nl,
+	write("Digite o codigo do produto: "),
+	read(COD),
+	prodLucro(COD).	
+
+opcao(CAT) :-                          
+        CAT==3,
+        qntEstoque,
+        main.
+
+opcao(CAT) :-                          
+        CAT==4,
+        gastoCompras(12,Z),nl,
+        write("Foram gastos "),
+        write(Z),
+        write(" reais em compras"),nl,
+        main.
+
+opcao(CAT) :-                          /* Sair do menu */
+        CAT==8.
+
+opcao(_) :-
+        nl,write('OPÇÃO INVALIDA'),nl,
+        main.	
+
+busca(COD) :-
+	produto(_,COD,_,Y,_,_),
+	write("Produto: "),
+	write(COD),nl,
+	write("Quantidade: "),
+	write(Y),
+	main.	
+
+prodLucro(X) :- 
+	produto(X,_,_,Z,_,W),
+	venda(X,_,_,K,_,L),
+	T is Z*W,
+	T1 is K*L,
+	TR is T-T1,
+	write("Lucro: "),
+	write(TR),
+	main.
+
+qntProdutos(1,Z) :-	
+	produto(1,_,_,Z,_,_).
+
+qntProdutos(X,Z) :-
+	X>1,
+	produto(X,_,_,Y,_,_),
+	X1 is X-1,
+	qntProdutos(X1,Z2),
+	Z is Y+Z2.	
+
+qntVendas(1,Z) :-	
+	venda(1,_,_,Z,_,_).
+
+qntVendas(X,Z) :-
+	X>1,
+	venda(X,_,_,Y,_,_),
+	X1 is X-1,
+	qntVendas(X1,Z2),
+	Z is Y+Z2.	
+
+qntEstoque :-
+	qntProdutos(12,P),
+	qntVendas(12,V),
+	T is P-V,nl,
+	write("EXISTEM "),
+	write(T),
+	write(" PRODUTOS NO ESTOQUE"),nl.	
+
+qntGasta(X,Y,Z) :-
+	produto(_,_,_,X,_,Y),
+	Z is X*Y.	
+
+gastoCompras(1,Z) :-
+	produto(1,_,_,X,_,W),
+	Z is X*W.
+
+gastoCompras(X,Z) :-
+	X>1,
+	produto(X,_,_,Y,_,W),
+	qntGasta(Y,W,R),
+	X1 is X-1,
+	gastoCompras(X1,Z1),
+	Z is R+Z1.
+
+/*gastoVendas(1,Z) :-
+	venda(1,_,_,X,_,W),
+	Z is X*W.
+
+gastoVendas(X,Z) :-								NAO FUNCIONA AINDA
+	X>1,
+	venda(X,_,_,Y,_,W),
+	qntGasta(Y,W,R),
+	X1 is X-1,
+	gastoVendas(X1,Z1),
+	Z is R+Z1.	
+*/
